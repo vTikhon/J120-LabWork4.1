@@ -2,32 +2,39 @@ package ru.avalon.vergentev.j120.labwork4a;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.util.*;
 
-public class BooksAccounting extends JFrame implements ActionListener {
+public class BooksAccounting extends JFrame implements ActionListener, WindowListener {
+    FileReader fileReader;
+    FileWriter fileWriter;
+    FileOutputStream fileOutputStream;
+    FileInputStream fileInputStream;
     JButton addBook = new JButton("Add Book");
     JButton removeBook = new JButton("Remove Book");
     JButton showBooks = new JButton("Show Books");
-    AdderBook addButton = new AdderBook();
-    RemoverBook removeButton = new RemoverBook();
-    TableOfBooks showsBookButton = new TableOfBooks();
+    File file = new File("books.dat");
+    AdderBook adderBook = new AdderBook();
+    RemoverBook removerBook = new RemoverBook();
+    TableOfBooks tableOfBooks = new TableOfBooks();
+    Book book = new Book();
 
 
-
-    public BooksAccounting() throws HeadlessException {
+    public BooksAccounting() {
         super("Books accounting");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(300, 200);
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(new FlowLayout());
-
+        addWindowListener(this);
         addButton(addBook);
         addButton(removeBook);
         addButton(showBooks);
     }
 
     //METHODS
-    public void addButton (JButton button) {
+    private void addButton (JButton button) {
         button.addActionListener(this);
         add(button);
     }
@@ -40,30 +47,73 @@ public class BooksAccounting extends JFrame implements ActionListener {
     }
 
     private void algorithmIfAddBookButtonIsPushed () {
-        if (!addButton.isActive()) {
-            addButton.setVisible(true);
-//            System.out.println("aaa");
+        if (!adderBook.isActive()) {
+            adderBook.setVisible(true);
         } else {
-            addButton.dispose();
-//            System.out.println("bbb");
+            adderBook.dispose();
         }
     }
 
     private void algorithmIfRemoveBookButtonIsPushed () {
-        if (!removeButton.isActive()) {
-            removeButton.setVisible(true);
+        if (!removerBook.isActive()) {
+            removerBook.setVisible(true);
         } else {
-            removeButton.dispose();
+            removerBook.dispose();
         }
     }
 
     private void algorithmIfShowBooksButtonIsPushed () {
-        if (!showsBookButton.isActive()) {
-            showsBookButton.setVisible(true);
+        if (!tableOfBooks.isActive()) {
+            tableOfBooks.setVisible(true);
         } else {
-            showsBookButton.dispose();
+            tableOfBooks.dispose();
         }
     }
 
+    @Override
+    public void windowOpened(WindowEvent e) {loadData(file);}
 
+    //метод читающий файл и возвращающий данные в память компьютера
+    public Properties loadData (File file) {
+        System.out.println(adderBook.data.toString());
+        try {
+            if (!file.exists()) file.createNewFile();
+            fileReader = new FileReader(file);
+            adderBook.data.load(fileReader);
+            fileReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return adderBook.data;
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        storeData(file);
+        adderBook.dispose();
+        removerBook.dispose();
+        tableOfBooks.dispose();
+    }
+
+    public void storeData (File file) {
+        System.out.println(adderBook.data.toString());
+        try {
+            fileWriter = new FileWriter(file, false);
+            adderBook.data.store(fileWriter, "j120 task4.1 books");
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {}
+    @Override
+    public void windowIconified(WindowEvent e) {}
+    @Override
+    public void windowDeiconified(WindowEvent e) {}
+    @Override
+    public void windowActivated(WindowEvent e) {}
+    @Override
+    public void windowDeactivated(WindowEvent e) {}
 }

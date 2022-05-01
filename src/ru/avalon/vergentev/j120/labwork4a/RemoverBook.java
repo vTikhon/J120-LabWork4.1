@@ -21,7 +21,7 @@ public class RemoverBook extends JFrame implements ActionListener {
         add(remove);
     }
 
-    public void addTextField (JTextField field) {
+    private void addTextField (JTextField field) {
         field.addActionListener(this);
         add(field);
     }

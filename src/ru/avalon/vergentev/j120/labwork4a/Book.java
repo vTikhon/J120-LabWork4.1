@@ -1,23 +1,35 @@
 package ru.avalon.vergentev.j120.labwork4a;
 
+import java.util.Properties;
+
 public class Book {
     private String isbn;
     private String title;
     private String authors;
-    private Integer year;
+    private String year;
 
     public Book() {
     }
 
-    public Book(String isbn, String title, Integer year) {
+    public Book(String isbn, String title, String year) {
         setIsbn(isbn);
         setTitle(title);
         setYear(year);
     }
 
-    public Book(String isbn, String title, String authors, Integer year) {
+    public Book(String isbn, String title, String authors, String year) {
         this(isbn, title, year);
         setAuthors(authors);
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "isbn='" + isbn + '\'' +
+                ", title='" + title + '\'' +
+                ", authors='" + authors + '\'' +
+                ", year='" + year + '\'' +
+                '}';
     }
 
     public String getIsbn() {
@@ -44,11 +56,11 @@ public class Book {
         this.authors = authors;
     }
 
-    public Integer getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(Integer year) {
+    public void setYear(String year) {
         this.year = year;
     }
 }
