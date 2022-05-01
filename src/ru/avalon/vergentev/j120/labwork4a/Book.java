@@ -8,8 +8,7 @@ public class Book {
     private String authors;
     private String year;
 
-    public Book() {
-    }
+    public Book() {}
 
     public Book(String isbn, String title, String year) {
         setIsbn(isbn);

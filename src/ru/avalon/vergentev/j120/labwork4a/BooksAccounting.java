@@ -8,8 +8,6 @@ import java.util.*;
 public class BooksAccounting extends JFrame implements ActionListener, WindowListener {
     FileReader fileReader;
     FileWriter fileWriter;
-    FileOutputStream fileOutputStream;
-    FileInputStream fileInputStream;
     JButton addBook = new JButton("Add Book");
     JButton removeBook = new JButton("Remove Book");
     JButton showBooks = new JButton("Show Books");
@@ -17,8 +15,6 @@ public class BooksAccounting extends JFrame implements ActionListener, WindowLis
     AdderBook adderBook = new AdderBook();
     RemoverBook removerBook = new RemoverBook();
     TableOfBooks tableOfBooks = new TableOfBooks();
-    Book book = new Book();
-
 
     public BooksAccounting() {
         super("Books accounting");
@@ -75,7 +71,6 @@ public class BooksAccounting extends JFrame implements ActionListener, WindowLis
 
     //метод читающий файл и возвращающий данные в память компьютера
     public Properties loadData (File file) {
-        System.out.println(adderBook.data.toString());
         try {
             if (!file.exists()) file.createNewFile();
             fileReader = new FileReader(file);
@@ -84,6 +79,7 @@ public class BooksAccounting extends JFrame implements ActionListener, WindowLis
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("begin: " + adderBook.data.toString());
         return adderBook.data;
     }
 
@@ -96,10 +92,10 @@ public class BooksAccounting extends JFrame implements ActionListener, WindowLis
     }
 
     public void storeData (File file) {
-        System.out.println(adderBook.data.toString());
+        System.out.println("end: " + adderBook.data.toString());
         try {
             fileWriter = new FileWriter(file, false);
-            adderBook.data.store(fileWriter, "j120 task4.1 books");
+            adderBook.data.store(fileWriter, null);
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();

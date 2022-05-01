@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 public class TableOfBooks extends JFrame implements ActionListener {
     JTable table = new JTable();
 
-    public TableOfBooks() throws HeadlessException {
+    public TableOfBooks() {
         super("Table of books");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(500, 300);

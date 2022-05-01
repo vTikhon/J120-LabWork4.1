@@ -65,7 +65,7 @@ public class AdderBook extends JFrame implements ActionListener {
         book.setAuthors(authorsText.getText());
         book.setYear(yearText.getText());
         if (!data.containsKey(codeText.getText())) {
-            data.put(codeText.getText(), book);
+            data.setProperty(codeText.getText(), String.valueOf(book));
             codeText.setText("");
             isbnText.setText("");
             titleText.setText("");
