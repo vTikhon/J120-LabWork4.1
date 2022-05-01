@@ -3,40 +3,33 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class BooksAccounting extends JFrame implements ActionListener, KeyListener {
+public class BooksAccounting extends JFrame implements ActionListener {
     JButton addBook = new JButton("Add Book");
     JButton removeBook = new JButton("Remove Book");
     JButton showBooks = new JButton("Show Books");
-    String pole1String = "";
-    JLabel textLabel1 = new JLabel(pole1String);
+    AdderBook addButton = new AdderBook();
+    RemoverBook removeButton = new RemoverBook();
+    TableOfBooks showsBookButton = new TableOfBooks();
+
 
 
     public BooksAccounting() throws HeadlessException {
         super("Books accounting");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(300, 400);
+        setSize(300, 200);
         setResizable(false);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(3,1));
+        setLayout(new FlowLayout());
 
-        setButtonInterface(addBook);
-        setButtonInterface(removeBook);
-        setButtonInterface(showBooks);
-
-
+        addButton(addBook);
+        addButton(removeBook);
+        addButton(showBooks);
     }
 
     //METHODS
-    //method which preset the appearance of the buttons (for constructor)
-    public void setButtonInterface (JButton button) {
+    public void addButton (JButton button) {
         button.addActionListener(this);
         add(button);
-    }
-
-    //method which preset the appearance of the text label (for constructor)
-    public void setLabelInterface (JPanel jPanel, JLabel label,
-                                   GridBagConstraints labelPosition) {
-        add(label, labelPosition);
     }
 
     @Override
@@ -46,26 +39,31 @@ public class BooksAccounting extends JFrame implements ActionListener, KeyListen
         else if (e.getSource() == showBooks) algorithmIfShowBooksButtonIsPushed();
     }
 
-    public void algorithmIfAddBookButtonIsPushed () {
-
+    private void algorithmIfAddBookButtonIsPushed () {
+        if (!addButton.isActive()) {
+            addButton.setVisible(true);
+//            System.out.println("aaa");
+        } else {
+            addButton.dispose();
+//            System.out.println("bbb");
+        }
     }
 
-    public void algorithmIfRemoveBookButtonIsPushed () {
-
+    private void algorithmIfRemoveBookButtonIsPushed () {
+        if (!removeButton.isActive()) {
+            removeButton.setVisible(true);
+        } else {
+            removeButton.dispose();
+        }
     }
 
-    public void algorithmIfShowBooksButtonIsPushed () {
-
+    private void algorithmIfShowBooksButtonIsPushed () {
+        if (!showsBookButton.isActive()) {
+            showsBookButton.setVisible(true);
+        } else {
+            showsBookButton.dispose();
+        }
     }
 
 
-
-
-
-    @Override
-    public void keyTyped(KeyEvent e) {}
-    @Override
-    public void keyPressed(KeyEvent e) {}
-    @Override
-    public void keyReleased(KeyEvent e) {}
 }
