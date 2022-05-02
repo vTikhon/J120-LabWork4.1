@@ -1,22 +1,20 @@
 package ru.avalon.vergentev.j120.labwork4a;
 
-import java.util.Properties;
-
-public class Book {
+public class BookParameters {
     private String isbn;
     private String title;
     private String authors;
     private String year;
 
-    public Book() {}
+    public BookParameters() {}
 
-    public Book(String isbn, String title, String year) {
+    public BookParameters(String isbn, String title, String year) {
         setIsbn(isbn);
         setTitle(title);
         setYear(year);
     }
 
-    public Book(String isbn, String title, String authors, String year) {
+    public BookParameters(String isbn, String title, String authors, String year) {
         this(isbn, title, year);
         setAuthors(authors);
     }
