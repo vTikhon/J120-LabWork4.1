@@ -26,16 +26,10 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
     JButton empty3 = new JButton("");
 
     File file = new File("books.dat");
-    BookParameters book;
     Properties data = new Properties();
 
-    String exampleData[][] = {{"101", "Amit", "670000", "0", "0"},
-            {"102", "Jai", "780000", "0", "0"},
-            {"101", "Sachin", "700000", "0", "0"}};
-    String column[] = {"CODE", "ISBN", "TITLE", "AUTHORS", "YEAR"};
-    JTable table = new JTable(exampleData, column);
-    JScrollPane scrollPane;
-    JFrame frameForTable;
+    String[] column = {"CODE", "ISBN", "TITLE", "AUTHORS", "YEAR"};
+    JFrame frameForTable = new JFrame();
 
     public BookAccounting() throws HeadlessException {
         setTitle("Books accounting");
@@ -66,10 +60,6 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
 
         add(empty3);
         addButton(showBooks);
-        frameForTable = new JFrame();
-        scrollPane = new JScrollPane(table);
-        frameForTable.add(scrollPane);
-        frameForTable.setBounds(30, 40, 600, 600);
     }
 
     private void addButton (JButton button) {
@@ -82,6 +72,13 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
         add(field);
     }
 
+    private void addTable () {
+        JTable table = new JTable(getDataFromPropertiesForTable(), column);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frameForTable.add(scrollPane);
+        frameForTable.setBounds(30, 40, 600, 600);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == add) algorithmIfAddBookButtonIsPushed();
@@ -90,7 +87,7 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
     }
 
     private void algorithmIfAddBookButtonIsPushed() {
-        book = new BookParameters();
+        BookParameters book = new BookParameters();
         codeText.getText();
         book.setIsbn(isbnText.getText());
         book.setTitle(titleText.getText());
@@ -106,25 +103,38 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
         } else {
             JOptionPane.showMessageDialog(null, "That code has another book", "WARNING", JOptionPane.INFORMATION_MESSAGE);
         }
-        System.out.println("from add " + data.toString());
+        getDataFromPropertiesForTable();
     }
 
     private void algorithmIfRemoveBookButtonIsPushed() {
         int resultRemove = JOptionPane.showConfirmDialog(null, "Are you sure want to remove that book from data base ?", "Warning", JOptionPane.OK_CANCEL_OPTION);
         if (resultRemove == JOptionPane.OK_OPTION) {
-            remove(codeTextForRemover.getText());
+            data.remove(codeTextForRemover.getText());
             codeTextForRemover.setText("");
         }
     }
 
-    private void remove(String key) {
-        System.out.println("from remover " + data.toString());
-        System.out.println(key + " contains? " + data.containsKey(key));
-        data.remove(key);
+    private void algorithmIfShowBooksButtonIsPushed() {
+        addTable();
+        frameForTable.setVisible(!frameForTable.isShowing());
     }
 
-    private void algorithmIfShowBooksButtonIsPushed() {
-        frameForTable.setVisible(true);
+    private String[][] getDataFromPropertiesForTable() {
+        String[][] arrayData = new String[data.size()][];
+        int k = 0;
+        for (Object i : data.keySet()) {
+            BookParameters book = new BookParameters();
+            String [] dataEachBookParameter = ((String)data.get(i)).split("'");
+            for (int j = 1; j < dataEachBookParameter.length; j = j + 2) {
+                if      (j == 1) book.setIsbn(dataEachBookParameter[j]);
+                else if (j == 3) book.setTitle(dataEachBookParameter[j]);
+                else if (j == 5) book.setAuthors(dataEachBookParameter[j]);
+                else if (j == 7) book.setYear(dataEachBookParameter[j]);
+            }
+            arrayData[k] = new String[]{(String) i, book.getIsbn(), book.getTitle(), book.getAuthors(), book.getYear()};
+            k++;
+        }
+        return arrayData;
     }
 
     @Override
@@ -132,7 +142,7 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
         loadData();
     }
 
-    //метод читающий файл и возвращающий данные в память компьютера
+    //метод читающий файл и возвращающий данные в память компьютера в виде Properties
     public Properties loadData () {
         try {
             if (!file.exists()) file.createNewFile();
@@ -142,7 +152,6 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("begin: " + data.toString());
         return data;
     }
 
@@ -153,7 +162,6 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
     }
 
     public void storeData () {
-        System.out.println("end: " + data.toString());
         try {
             FileWriter fileWriter = new FileWriter(file, false);
             data.store(fileWriter, null);
