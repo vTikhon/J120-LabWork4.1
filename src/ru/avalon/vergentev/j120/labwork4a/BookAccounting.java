@@ -29,7 +29,9 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
     Properties data = new Properties();
 
     String[] column = {"CODE", "ISBN", "TITLE", "AUTHORS", "YEAR"};
-    JFrame frameForTable = new JFrame();
+    JFrame frameForTable  = new JFrame();;
+    JTable table;
+    JScrollPane scrollPane;
 
     public BookAccounting() {
         setTitle("Books accounting");
@@ -73,10 +75,15 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
     }
 
     private void addTable () {
-        JTable table = new JTable(getDataFromPropertiesForTable(), column);
-        JScrollPane scrollPane = new JScrollPane(table);
-        frameForTable.add(scrollPane);
-        frameForTable.setBounds(30, 40, 600, 600);
+        if (frameForTable.isShowing()) {
+            frameForTable.dispose();
+        } else {
+            frameForTable = new JFrame();
+            table = new JTable(getDataFromPropertiesForTable(), column);
+            scrollPane = new JScrollPane(table);
+            frameForTable.setBounds(30, 40, 600, 600);
+            frameForTable.add(scrollPane);
+        }
     }
 
     @Override
@@ -103,14 +110,21 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
         } else {
             JOptionPane.showMessageDialog(null, "That code has another book", "WARNING", JOptionPane.INFORMATION_MESSAGE);
         }
-        getDataFromPropertiesForTable();
+        if (frameForTable.isShowing()) {
+            frameForTable.dispose();
+            algorithmIfShowBooksButtonIsPushed();
+        }
     }
 
     private void algorithmIfRemoveBookButtonIsPushed() {
-        int resultRemove = JOptionPane.showConfirmDialog(null, "Are you sure want to remove that book from data base ?", "Warning", JOptionPane.OK_CANCEL_OPTION);
+        int resultRemove = JOptionPane.showConfirmDialog(null, "Are you sure want to remove that book from data base ?", "WARNING", JOptionPane.OK_CANCEL_OPTION);
         if (resultRemove == JOptionPane.OK_OPTION) {
             data.remove(codeTextForRemover.getText());
             codeTextForRemover.setText("");
+        }
+        if (frameForTable.isShowing()) {
+            frameForTable.dispose();
+            algorithmIfShowBooksButtonIsPushed();
         }
     }
 
