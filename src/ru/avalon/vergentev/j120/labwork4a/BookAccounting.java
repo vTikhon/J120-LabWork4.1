@@ -29,7 +29,7 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
     Properties data = new Properties();
 
     String[] column = {"CODE", "ISBN", "TITLE", "AUTHORS", "YEAR"};
-    JFrame frameForTable  = new JFrame();;
+    JFrame frameForTable  = new JFrame();
     JTable table;
     JScrollPane scrollPane;
 
