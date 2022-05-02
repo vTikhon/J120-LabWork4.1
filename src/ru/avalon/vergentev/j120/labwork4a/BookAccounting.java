@@ -31,7 +31,7 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
     String[] column = {"CODE", "ISBN", "TITLE", "AUTHORS", "YEAR"};
     JFrame frameForTable = new JFrame();
 
-    public BookAccounting() throws HeadlessException {
+    public BookAccounting() {
         setTitle("Books accounting");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 600);
@@ -89,10 +89,10 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
     private void algorithmIfAddBookButtonIsPushed() {
         BookParameters book = new BookParameters();
         codeText.getText();
-        book.setIsbn(isbnText.getText());
-        book.setTitle(titleText.getText());
-        book.setAuthors(authorsText.getText());
-        book.setYear(yearText.getText());
+        book.setIsbn(isbnText.getText().replaceAll("'", ""));
+        book.setTitle(titleText.getText().replaceAll("'", ""));
+        book.setAuthors(authorsText.getText().replaceAll("'", ""));
+        book.setYear(yearText.getText().replaceAll("'", ""));
         if (!data.containsKey(codeText.getText())) {
             data.setProperty(codeText.getText(), String.valueOf(book));
             codeText.setText("");
@@ -138,9 +138,7 @@ public class BookAccounting extends JFrame implements ActionListener, WindowList
     }
 
     @Override
-    public void windowOpened(WindowEvent e) {
-        loadData();
-    }
+    public void windowOpened(WindowEvent e) {loadData();}
 
     //метод читающий файл и возвращающий данные в память компьютера в виде Properties
     public Properties loadData () {
