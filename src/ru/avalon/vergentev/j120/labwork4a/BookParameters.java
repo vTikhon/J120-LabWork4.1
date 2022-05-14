@@ -10,7 +10,7 @@ public class BookParameters {
 
     public BookParameters(String isbn, String title, String year) {
         setIsbn(isbn);
-        setTitle(title);
+        setBookTitle(title);
         setYear(year);
     }
 
@@ -29,35 +29,12 @@ public class BookParameters {
                 '}';
     }
 
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(String authors) {
-        this.authors = authors;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
+    public String getIsbn() {return isbn;}
+    public void setIsbn(String isbn) {this.isbn = isbn;}
+    public String getBookTitle() {return title;}
+    public void setBookTitle(String title) {this.title = title;}
+    public String getAuthors() {return authors;}
+    public void setAuthors(String authors) {this.authors = authors;}
+    public String getYear() {return year;}
+    public void setYear(String year) {this.year = year;}
 }

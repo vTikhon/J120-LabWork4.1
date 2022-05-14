@@ -1,188 +1,132 @@
 package ru.avalon.vergentev.j120.labwork4a;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.Properties;
 
-public class BookAccounting extends JFrame implements ActionListener, WindowListener {
-    JLabel code = new JLabel("Code: ", SwingConstants.RIGHT);
-    JTextField codeText = new JTextField();
-    JLabel isbn = new JLabel("ISBN: ", SwingConstants.RIGHT);
-    JTextField isbnText = new JTextField();
-    JLabel title = new JLabel("Title: ", SwingConstants.RIGHT);
-    JTextField titleText = new JTextField();
-    JLabel authors = new JLabel("Authors: ", SwingConstants.RIGHT);
-    JTextField authorsText = new JTextField();
-    JLabel year = new JLabel("Year publishing: ", SwingConstants.RIGHT);
-    JTextField yearText = new JTextField();
-    JButton add = new JButton("Add");
-    JButton empty1 = new JButton("");
-    JLabel codeForRemover = new JLabel("Code for remove book: ", SwingConstants.RIGHT);
-    JTextField codeTextForRemover = new JTextField();
-    JButton remove = new JButton("Remove");
-    JButton empty2 = new JButton("");
-    JButton showBooks = new JButton("Show books");
-    JButton empty3 = new JButton("");
-
-    File file = new File("books.dat");
-    Properties data = new Properties();
-
-    String[] column = {"CODE", "ISBN", "TITLE", "AUTHORS", "YEAR"};
-    JFrame frameForTable  = new JFrame();
-    JTable table;
-    JScrollPane scrollPane;
+public class BookAccounting extends JFrame implements WindowListener {
+    private final File file = new File("books.dat");
+    public static final Properties books = new Properties();
+    private final BookDialog bookDialog = new BookDialog(this);
+    private final BookTableModel booksTableModel = new BookTableModel();
+    private JTable table;
 
     public BookAccounting() {
+        loadData();
         setTitle("Books accounting");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(400, 600);
-        setResizable(false);
+        setSize(800, 600);
+        setResizable(true);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(9,2));
         addWindowListener(this);
-
-        add(code);
-        addTextField(codeText);
-        add(isbn);
-        addTextField(isbnText);
-        add(title);
-        addTextField(titleText);
-        add(authors);
-        addTextField(authorsText);
-        add(year);
-        addTextField(yearText);
-        add(empty1);
-        addButton(add);
-
-        add(codeForRemover);
-        addTextField(codeTextForRemover);
-        add(empty2);
-        addButton(remove);
-
-        add(empty3);
-        addButton(showBooks);
+        initTable();
+        initMenu();
     }
 
-    private void addButton (JButton button) {
-        button.addActionListener(this);
-        add(button);
+    private void initTable () {
+        table = new JTable(booksTableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane);
     }
 
-    private void addTextField (JTextField field) {
-        field.addActionListener(this);
-        add(field);
+    private void initMenu() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu operations = new JMenu("Operations");
+        operations.setMnemonic('O');
+        menuBar.add(operations);
+        addMenuItemTo(operations, "Add", 'A',
+                KeyStroke.getKeyStroke('A', InputEvent.ALT_DOWN_MASK),
+                e -> algorithmIfAddBookButtonIsPushed());
+        addMenuItemTo(operations, "Change", 'C',
+                KeyStroke.getKeyStroke('C', InputEvent.ALT_DOWN_MASK),
+                e -> algorithmIfChangeBookButtonIsPushed());
+        addMenuItemTo(operations, "Delete", 'D',
+                KeyStroke.getKeyStroke('D', InputEvent.ALT_DOWN_MASK),
+                e -> algorithmIfRemoveBookButtonIsPushed());
+        setJMenuBar(menuBar);
     }
 
-    private void addTable () {
-        if (frameForTable.isShowing()) {
-            frameForTable.dispose();
-        } else {
-            frameForTable = new JFrame();
-            table = new JTable(getDataFromPropertiesForTable(), column);
-            scrollPane = new JScrollPane(table);
-            frameForTable.setBounds(30, 40, 600, 600);
-            frameForTable.add(scrollPane);
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == add) algorithmIfAddBookButtonIsPushed();
-        else if (e.getSource() == remove) algorithmIfRemoveBookButtonIsPushed();
-        else if (e.getSource() == showBooks) algorithmIfShowBooksButtonIsPushed();
+    private void addMenuItemTo(JMenu parent, String text, char mnemonic, KeyStroke accelerator, ActionListener al) {
+        JMenuItem menuItem = new JMenuItem(text, mnemonic);
+        menuItem.setAccelerator(accelerator);
+        menuItem.addActionListener(al);
+        parent.add(menuItem);
     }
 
     private void algorithmIfAddBookButtonIsPushed() {
-        BookParameters book = new BookParameters();
-        codeText.getText();
-        book.setIsbn(isbnText.getText().replaceAll("'", ""));
-        book.setTitle(titleText.getText().replaceAll("'", ""));
-        book.setAuthors(authorsText.getText().replaceAll("'", ""));
-        book.setYear(yearText.getText().replaceAll("'", ""));
-        if (!data.containsKey(codeText.getText())) {
-            data.setProperty(codeText.getText(), String.valueOf(book));
-            codeText.setText("");
-            isbnText.setText("");
-            titleText.setText("");
-            authorsText.setText("");
-            yearText.setText("");
-        } else {
-            JOptionPane.showMessageDialog(null, "That code has another book", "WARNING", JOptionPane.INFORMATION_MESSAGE);
+        if (bookDialog.isFrameOpened()) {
+            BookParameters book = new BookParameters();
+            bookDialog.getCodeFromTextField();
+            book.setIsbn(bookDialog.getIsbnFromTextField().replaceAll("'", ""));
+            book.setBookTitle(bookDialog.getTitleFromTextField().replaceAll("'", ""));
+            book.setAuthors(bookDialog.getAuthorsFromTextField().replaceAll("'", ""));
+            book.setYear(bookDialog.getYearFromTextField().replaceAll("'", ""));
+            if (!books.containsKey(bookDialog.getCodeFromTextField())) {
+                books.setProperty(bookDialog.getCodeFromTextField(), String.valueOf(book));
+                booksTableModel.insertObjectInNewRow();
+                bookDialog.setCodeForTextField("");
+                bookDialog.setIsbnForTextField("");
+                bookDialog.setTitleForTextField("");
+                bookDialog.setAuthorsForTextField("");
+                bookDialog.setYearForTextField("");
+            } else {
+                JOptionPane.showMessageDialog(null, "That code has another book", "WARNING", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
-        if (frameForTable.isShowing()) {
-            frameForTable.dispose();
-            algorithmIfShowBooksButtonIsPushed();
+    }
+
+    private void algorithmIfChangeBookButtonIsPushed() {
+        if (table.getSelectedRow() == -1) return;
+        bookDialog.prepareForChange(table);
+        if (bookDialog.isFrameOpened()) {
+            BookParameters book = new BookParameters();
+            bookDialog.getCodeFromTextField();
+            book.setIsbn(bookDialog.getIsbnFromTextField().replaceAll("'", ""));
+            book.setBookTitle(bookDialog.getTitleFromTextField().replaceAll("'", ""));
+            book.setAuthors(bookDialog.getAuthorsFromTextField().replaceAll("'", ""));
+            book.setYear(bookDialog.getYearFromTextField().replaceAll("'", ""));
+            books.setProperty(bookDialog.getCodeFromTextField(), String.valueOf(book));
+            booksTableModel.changeObjectInRow(table.getSelectedRow());
         }
     }
 
     private void algorithmIfRemoveBookButtonIsPushed() {
-        int resultRemove = JOptionPane.showConfirmDialog(null, "Are you sure want to remove that book from data base ?", "WARNING", JOptionPane.OK_CANCEL_OPTION);
-        if (resultRemove == JOptionPane.OK_OPTION) {
-            data.remove(codeTextForRemover.getText());
-            codeTextForRemover.setText("");
-        }
-        if (frameForTable.isShowing()) {
-            frameForTable.dispose();
-            algorithmIfShowBooksButtonIsPushed();
+        if (table.getSelectedRow() == -1) return;
+        if (JOptionPane.showConfirmDialog(this,"Are you sure you want to delete book\n" + "with code " + booksTableModel.getValueAt(table.getSelectedRow(), 0) + "?", "Delete confirmation",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+            books.remove(booksTableModel.getValueAt(table.getSelectedRow(), 0));
+            booksTableModel.deleteObjectInRow(table.getSelectedRow());
         }
     }
-
-    private void algorithmIfShowBooksButtonIsPushed() {
-        addTable();
-        frameForTable.setVisible(!frameForTable.isShowing());
-    }
-
-    private String[][] getDataFromPropertiesForTable() {
-        String[][] arrayData = new String[data.size()][];
-        int k = 0;
-        for (Object i : data.keySet()) {
-            BookParameters book = new BookParameters();
-            String [] dataEachBookParameter = ((String)data.get(i)).split("'");
-            for (int j = 1; j < dataEachBookParameter.length; j = j + 2) {
-                if      (j == 1) book.setIsbn(dataEachBookParameter[j]);
-                else if (j == 3) book.setTitle(dataEachBookParameter[j]);
-                else if (j == 5) book.setAuthors(dataEachBookParameter[j]);
-                else if (j == 7) book.setYear(dataEachBookParameter[j]);
-            }
-            arrayData[k] = new String[]{(String) i, book.getIsbn(), book.getTitle(), book.getAuthors(), book.getYear()};
-            k++;
-        }
-        return arrayData;
-    }
-
-    @Override
-    public void windowOpened(WindowEvent e) {loadData();}
 
     //метод читающий файл и возвращающий данные в память компьютера в виде Properties
     public Properties loadData () {
         try {
             if (!file.exists()) file.createNewFile();
             FileReader fileReader = new FileReader(file);
-            data.load(fileReader);
+            books.load(fileReader);
             fileReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return data;
+        return books;
     }
 
-    @Override
-    public void windowClosing(WindowEvent e) {
-        storeData();
-        frameForTable.dispose();
-    }
-
+    //метод записывающий файл из Properties
     public void storeData () {
         try {
             FileWriter fileWriter = new FileWriter(file, false);
-            data.store(fileWriter, null);
+            books.store(fileWriter, null);
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @Override
+    public void windowOpened(WindowEvent e) {}
+    @Override
+    public void windowClosing(WindowEvent e) {storeData();}
     @Override
     public void windowClosed(WindowEvent e) {}
     @Override
