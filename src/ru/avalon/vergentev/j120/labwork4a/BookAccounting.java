@@ -7,9 +7,10 @@ public class BookAccounting extends JFrame implements WindowListener {
     private final BookTableModel booksTableModel = new BookTableModel();
     private final JTable table = new JTable(booksTableModel);
     private final BookParameters bookParameters = new BookParameters();
+    private final BookFileData bookFileData = new BookFileData();
 
     public BookAccounting() {
-        bookParameters.loadData();
+        bookFileData.loadData();
         setTitle("Books accounting");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
@@ -51,14 +52,13 @@ public class BookAccounting extends JFrame implements WindowListener {
 
     private void algorithmIfAddBookButtonIsPushed() {
         if (bookDialog.isFrameOpened()) {
-            BookParameters book = new BookParameters();
             bookDialog.getCodeFromTextField();
-            book.setIsbn(bookDialog.getIsbnFromTextField().replaceAll("'", ""));
-            book.setBookTitle(bookDialog.getTitleFromTextField().replaceAll("'", ""));
-            book.setAuthors(bookDialog.getAuthorsFromTextField().replaceAll("'", ""));
-            book.setYear(bookDialog.getYearFromTextField().replaceAll("'", ""));
-            if (!BookParameters.getBooks().containsKey(bookDialog.getCodeFromTextField())) {
-                BookParameters.getBooks().setProperty(bookDialog.getCodeFromTextField(), String.valueOf(book));
+            bookParameters.setIsbn(bookDialog.getIsbnFromTextField().replaceAll("'", ""));
+            bookParameters.setBookTitle(bookDialog.getTitleFromTextField().replaceAll("'", ""));
+            bookParameters.setAuthors(bookDialog.getAuthorsFromTextField().replaceAll("'", ""));
+            bookParameters.setYear(bookDialog.getYearFromTextField().replaceAll("'", ""));
+            if (!BookFileData.getBooks().containsKey(bookDialog.getCodeFromTextField())) {
+                BookFileData.getBooks().setProperty(bookDialog.getCodeFromTextField(), String.valueOf(bookParameters));
                 booksTableModel.insertObjectInNewRow();
                 bookDialog.setCodeForTextField("");
                 bookDialog.setIsbnForTextField("");
@@ -75,13 +75,12 @@ public class BookAccounting extends JFrame implements WindowListener {
         if (table.getSelectedRow() == -1) return;
         bookDialog.prepareForChange(table);
         if (bookDialog.isFrameOpened()) {
-            BookParameters book = new BookParameters();
             bookDialog.getCodeFromTextField();
-            book.setIsbn(bookDialog.getIsbnFromTextField().replaceAll("'", ""));
-            book.setBookTitle(bookDialog.getTitleFromTextField().replaceAll("'", ""));
-            book.setAuthors(bookDialog.getAuthorsFromTextField().replaceAll("'", ""));
-            book.setYear(bookDialog.getYearFromTextField().replaceAll("'", ""));
-            BookParameters.getBooks().setProperty(bookDialog.getCodeFromTextField(), String.valueOf(book));
+            bookParameters.setIsbn(bookDialog.getIsbnFromTextField().replaceAll("'", ""));
+            bookParameters.setBookTitle(bookDialog.getTitleFromTextField().replaceAll("'", ""));
+            bookParameters.setAuthors(bookDialog.getAuthorsFromTextField().replaceAll("'", ""));
+            bookParameters.setYear(bookDialog.getYearFromTextField().replaceAll("'", ""));
+            BookFileData.getBooks().setProperty(bookDialog.getCodeFromTextField(), String.valueOf(bookParameters));
             booksTableModel.changeObjectInRow(table.getSelectedRow());
         }
     }
@@ -90,7 +89,7 @@ public class BookAccounting extends JFrame implements WindowListener {
         if (table.getSelectedRow() == -1) return;
         if (JOptionPane.showConfirmDialog(this,"Are you sure you want to delete book\n" + "with code " + booksTableModel.getValueAt(table.getSelectedRow(), 0) + "?", "Delete confirmation",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-            BookParameters.getBooks().remove(booksTableModel.getValueAt(table.getSelectedRow(), 0));
+            BookFileData.getBooks().remove(booksTableModel.getValueAt(table.getSelectedRow(), 0));
             booksTableModel.deleteObjectInRow(table.getSelectedRow());
         }
     }
@@ -98,7 +97,7 @@ public class BookAccounting extends JFrame implements WindowListener {
     @Override
     public void windowOpened(WindowEvent e) {}
     @Override
-    public void windowClosing(WindowEvent e) {bookParameters.storeData();}
+    public void windowClosing(WindowEvent e) {bookFileData.storeData();}
     @Override
     public void windowClosed(WindowEvent e) {}
     @Override

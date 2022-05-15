@@ -13,7 +13,7 @@ public class BookTableModel implements TableModel {
 //    }
 
     public void insertObjectInNewRow () {
-        int rowIndex = BookParameters.getBooks().size() - 1;
+        int rowIndex = BookFileData.getBooks().size() - 1;
         fireTableModelEvent(rowIndex, TableModelEvent.INSERT);
     }
 
@@ -22,7 +22,7 @@ public class BookTableModel implements TableModel {
     }
 
     public void deleteObjectInRow (int index) {
-        BookParameters.getBooks().remove(index);
+        BookFileData.getBooks().remove(index);
         fireTableModelEvent(index, TableModelEvent.DELETE);
     }
 
@@ -47,21 +47,21 @@ public class BookTableModel implements TableModel {
     @Override
     public String getColumnName(int columnIndex) {return COLUMN_HEADERS[columnIndex];}
     @Override
-    public int getRowCount() {return BookParameters.getBooks().size();}
+    public int getRowCount() {return BookFileData.getBooks().size();}
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        String[][] arrayData = new String[BookParameters.getBooks().size()][];
+        String[][] arrayData = new String[BookFileData.getBooks().size()][];
         int k = 0;
-        for (Object i : BookParameters.getBooks().keySet()) {
-            BookParameters book = new BookParameters();
-            String [] eachBookParameter = ((String)BookParameters.getBooks().get(i)).split("'");
+        for (Object i : BookFileData.getBooks().keySet()) {
+            BookParameters bookParameters = new BookParameters();
+            String [] eachBookParameter = ((String)BookFileData.getBooks().get(i)).split("'");
             for (int j = 1; j < eachBookParameter.length; j = j + 2) {
-                if      (j == 1) book.setIsbn(eachBookParameter[j]);
-                else if (j == 3) book.setBookTitle(eachBookParameter[j]);
-                else if (j == 5) book.setAuthors(eachBookParameter[j]);
-                else if (j == 7) book.setYear(eachBookParameter[j]);
+                if      (j == 1) bookParameters.setIsbn(eachBookParameter[j]);
+                else if (j == 3) bookParameters.setBookTitle(eachBookParameter[j]);
+                else if (j == 5) bookParameters.setAuthors(eachBookParameter[j]);
+                else if (j == 7) bookParameters.setYear(eachBookParameter[j]);
             }
-            arrayData[k] = new String[]{(String) i, book.getIsbn(), book.getBookTitle(), book.getAuthors(), book.getYear()};
+            arrayData[k] = new String[]{(String) i, bookParameters.getIsbn(), bookParameters.getBookTitle(), bookParameters.getAuthors(), bookParameters.getYear()};
             k++;
         }
         switch (columnIndex) {
