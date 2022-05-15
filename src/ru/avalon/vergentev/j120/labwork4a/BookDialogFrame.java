@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class BookDialog extends JDialog {
+public class BookDialogFrame extends JDialog {
     private final JTextField codeField;
     private final JTextField isbnField;
     private final JTextField titleField;
@@ -12,7 +12,7 @@ public class BookDialog extends JDialog {
     private boolean okPressed;
     BookTableModel bookTableModel;
 
-    public BookDialog (JFrame owner) {
+    public BookDialogFrame(JFrame owner) {
         super(owner, true);
         codeField = new JTextField(10);
         isbnField = new JTextField(10);

@@ -2,14 +2,14 @@ package ru.avalon.vergentev.j120.labwork4a;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class BookAccounting extends JFrame implements WindowListener {
-    private final BookDialog bookDialog = new BookDialog(this);
+public class BookAccountingFrame extends JFrame implements WindowListener {
+    private final BookDialogFrame bookDialog = new BookDialogFrame(this);
     private final BookTableModel booksTableModel = new BookTableModel();
     private final JTable table = new JTable(booksTableModel);
     private final BookParameters bookParameters = new BookParameters();
     private final BookFileData bookFileData = new BookFileData();
 
-    public BookAccounting() {
+    public BookAccountingFrame() {
         bookFileData.loadData();
         setTitle("Books accounting");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
