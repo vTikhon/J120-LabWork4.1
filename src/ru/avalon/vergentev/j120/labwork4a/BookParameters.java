@@ -8,17 +8,6 @@ public class BookParameters {
 
     public BookParameters() {}
 
-    public BookParameters(String isbn, String title, String year) {
-        setIsbn(isbn);
-        setBookTitle(title);
-        setYear(year);
-    }
-
-    public BookParameters(String isbn, String title, String authors, String year) {
-        this(isbn, title, year);
-        setAuthors(authors);
-    }
-
     @Override
     public String toString() {
         return "Book{" +

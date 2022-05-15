@@ -19,12 +19,12 @@ public class BookDialogFrame extends JDialog {
         titleField = new JTextField(80);
         authorsField = new JTextField(80);
         yearField = new JTextField(4);
-        initControls();
+        initLabelsAndFields();
         initOkCancelButtons();
         setResizable(false);
     }
 
-    private void initControls() {
+    private void initLabelsAndFields() {
         JPanel controlsPane = new JPanel(null);
         controlsPane.setLayout(new BoxLayout(controlsPane, BoxLayout.Y_AXIS));
 
@@ -98,47 +98,42 @@ public class BookDialogFrame extends JDialog {
                 .put(escape, cancelDialogAction);
     }
 
-    public boolean isFrameOpened() {
+    public boolean showModal() {
         pack();
         setLocationRelativeTo(getOwner());
-        if (codeField.isEnabled())
+        if (codeField.isEnabled()) {
             codeField.requestFocusInWindow();
-        else
-            titleField.requestFocusInWindow();
+        } else {
+            isbnField.requestFocusInWindow();
+        }
         okPressed = false;
         setVisible(true);
         return okPressed;
     }
 
-//    public void prepareForAdd () {
-//        setTitle("New book registration");
-//        codeField.setText("");
-//        isbnField.setText("");
-//        titleField.setText("");
-//        authorsField.setText("");
-//        yearField.setText("");
-//    }
+    public void prepareForAdd () {
+        setTitle("New book registration");
+        codeField.setText("");
+        isbnField.setText("");
+        titleField.setText("");
+        authorsField.setText("");
+        yearField.setText("");
+    }
 
     public void prepareForChange (JTable table) {
-//        this.setTitle("Book parameters change");
+        setTitle("Book parameters change");
         bookTableModel = new BookTableModel();
         codeField.setText(String.valueOf(bookTableModel.getValueAt(table.getSelectedRow(), 0)));
         isbnField.setText(String.valueOf(bookTableModel.getValueAt(table.getSelectedRow(), 1)));
         titleField.setText(String.valueOf(bookTableModel.getValueAt(table.getSelectedRow(), 2)));
         authorsField.setText(String.valueOf(bookTableModel.getValueAt(table.getSelectedRow(), 3)));
         yearField.setText(String.valueOf(bookTableModel.getValueAt(table.getSelectedRow(), 4)));
-
         codeField.setEnabled(false);
     }
 
     public String getCodeFromTextField() {return codeField.getText();}
-    public void setCodeForTextField(String string) {codeField.setText(string);}
     public String getIsbnFromTextField() {return isbnField.getText();}
-    public void setIsbnForTextField(String string) {isbnField.setText(string);}
     public String getTitleFromTextField() {return titleField.getText();}
-    public void setTitleForTextField(String string) {titleField.setText(string);}
     public String getAuthorsFromTextField() {return authorsField.getText();}
-    public void setAuthorsForTextField(String string) {authorsField.setText(string);}
     public String getYearFromTextField() {return yearField.getText();}
-    public void setYearForTextField(String string) {yearField.setText(string);}
 }

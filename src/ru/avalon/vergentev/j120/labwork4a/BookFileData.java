@@ -30,11 +30,5 @@ public class BookFileData {
         }
     }
 
-
     public static Properties getBooks() {return books;}
-//    public void setBooks(Properties books) {this.books = books;}
-//
-//    public int getBooksCount() {return books.size();}
-//    public BookParameters getBookInfo(int index) {return (BookParameters) books.get(index);}
-//    public static BookList getBook() {return book;}
 }

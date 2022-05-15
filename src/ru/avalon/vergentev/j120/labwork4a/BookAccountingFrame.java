@@ -51,20 +51,12 @@ public class BookAccountingFrame extends JFrame implements WindowListener {
     }
 
     private void algorithmIfAddBookButtonIsPushed() {
-        if (bookDialog.isFrameOpened()) {
-            bookDialog.getCodeFromTextField();
-            bookParameters.setIsbn(bookDialog.getIsbnFromTextField().replaceAll("'", ""));
-            bookParameters.setBookTitle(bookDialog.getTitleFromTextField().replaceAll("'", ""));
-            bookParameters.setAuthors(bookDialog.getAuthorsFromTextField().replaceAll("'", ""));
-            bookParameters.setYear(bookDialog.getYearFromTextField().replaceAll("'", ""));
+        bookDialog.prepareForAdd();
+        if (bookDialog.showModal()) {
+            setBookParameters();
             if (!BookFileData.getBooks().containsKey(bookDialog.getCodeFromTextField())) {
                 BookFileData.getBooks().setProperty(bookDialog.getCodeFromTextField(), String.valueOf(bookParameters));
                 booksTableModel.insertObjectInNewRow();
-                bookDialog.setCodeForTextField("");
-                bookDialog.setIsbnForTextField("");
-                bookDialog.setTitleForTextField("");
-                bookDialog.setAuthorsForTextField("");
-                bookDialog.setYearForTextField("");
             } else {
                 JOptionPane.showMessageDialog(null, "That code has another book", "WARNING", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -74,21 +66,26 @@ public class BookAccountingFrame extends JFrame implements WindowListener {
     private void algorithmIfChangeBookButtonIsPushed() {
         if (table.getSelectedRow() == -1) return;
         bookDialog.prepareForChange(table);
-        if (bookDialog.isFrameOpened()) {
-            bookDialog.getCodeFromTextField();
-            bookParameters.setIsbn(bookDialog.getIsbnFromTextField().replaceAll("'", ""));
-            bookParameters.setBookTitle(bookDialog.getTitleFromTextField().replaceAll("'", ""));
-            bookParameters.setAuthors(bookDialog.getAuthorsFromTextField().replaceAll("'", ""));
-            bookParameters.setYear(bookDialog.getYearFromTextField().replaceAll("'", ""));
+        if (bookDialog.showModal()) {
+            setBookParameters();
             BookFileData.getBooks().setProperty(bookDialog.getCodeFromTextField(), String.valueOf(bookParameters));
             booksTableModel.changeObjectInRow(table.getSelectedRow());
         }
     }
 
+    private void setBookParameters() {
+        bookDialog.getCodeFromTextField();
+        bookParameters.setIsbn(bookDialog.getIsbnFromTextField().replaceAll("'", ""));
+        bookParameters.setBookTitle(bookDialog.getTitleFromTextField().replaceAll("'", ""));
+        bookParameters.setAuthors(bookDialog.getAuthorsFromTextField().replaceAll("'", ""));
+        bookParameters.setYear(bookDialog.getYearFromTextField().replaceAll("'", ""));
+    }
+
     private void algorithmIfRemoveBookButtonIsPushed() {
         if (table.getSelectedRow() == -1) return;
-        if (JOptionPane.showConfirmDialog(this,"Are you sure you want to delete book\n" + "with code " + booksTableModel.getValueAt(table.getSelectedRow(), 0) + "?", "Delete confirmation",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(this,"Are you sure you want to delete book\n" + "with code " + booksTableModel.getValueAt(table.getSelectedRow(), 0) + "?",
+                                        "Delete confirmation",
+                                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
             BookFileData.getBooks().remove(booksTableModel.getValueAt(table.getSelectedRow(), 0));
             booksTableModel.deleteObjectInRow(table.getSelectedRow());
         }

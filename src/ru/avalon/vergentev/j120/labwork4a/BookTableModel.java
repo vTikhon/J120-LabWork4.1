@@ -7,11 +7,6 @@ public class BookTableModel implements TableModel {
     private static final String[] COLUMN_HEADERS = new String[]{"CODE", "ISBN", "TITLE", "AUTHORS", "YEAR"};
     private final Set<TableModelListener> modelListeners = new HashSet<>();
 
-//    public Properties getObjectInRow (int rowIndex) {
-//
-//        return BookParameters.getBooks().get(rowIndex);
-//    }
-
     public void insertObjectInNewRow () {
         int rowIndex = BookFileData.getBooks().size() - 1;
         fireTableModelEvent(rowIndex, TableModelEvent.INSERT);
